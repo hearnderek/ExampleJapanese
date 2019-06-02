@@ -1,1 +1,37 @@
-<h1> Hello Web! </h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <form>
+    コトペディア検索<br>
+    <input type="text" class="form-control" id="usr" name="Search">
+  </form>
+
+  <ul id='results'>
+  </ul>
+</div>
+
+</body>
+
+<script>
+var results = document.getElementById('results');
+var values = `$VALUE`;
+var splits = values.split("\n");
+for(var i=0;i<splits.length; i++) {
+	var li = document.createElement("LI");
+	var t = document.createTextNode(splits[i]);
+	li.appendChild(t);
+	results.appendChild(li);
+}
+</script>
+</html>

@@ -10,7 +10,8 @@ web_html = 'load me'
 mobile_html = 'load me'
 with open('web.html') as wfp:
     web_html = wfp.read()
-with open('mobile.html') as mfp:
+#with open('mobile.html') as mfp:
+with open('bs.html') as mfp:
     mobile_html = mfp.read()
 
 
@@ -45,8 +46,17 @@ class base_handler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-type','text/html; charset=utf-8')
         self.end_headers()
-        self.wfile.write(web_html)
-        return
+
+        # take all values of url parameter 'search'
+        search = urlparse.parse_qs(urlparse.urlparse(self.path).query).get('Search', '')
+        text = ''
+
+        # Send the html message
+        for val in search:
+            output = grep_documents(val.decode('utf-8'))
+            text += output
+
+        self.wfile.write(web_html.replace('$VALUE',text))
     
     def do_mobile_get(self):
         self.send_response(200)
