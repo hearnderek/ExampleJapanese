@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # coding=utf-8
+
 from BaseHTTPServer import BaseHTTPRequestHandler,HTTPServer
 import urlparse
 import subprocess
@@ -12,8 +13,13 @@ def grep_documents(word):
 
 #This class will handles any incoming request from the browser 
 class base_handler(BaseHTTPRequestHandler):
-    #Handler for the GET requests
-    def do_GET(self):
+    def do_404(self):
+        self.send_response(404)
+        self.send_header('Content-type','text/html; charset=utf-8')
+        self.end_headers()
+        return
+
+    def do_api_get(self):
         self.send_response(200)
         self.send_header('Content-type','text/html; charset=utf-8')
         self.end_headers()
@@ -25,9 +31,33 @@ class base_handler(BaseHTTPRequestHandler):
         for val in search:
             output = grep_documents(val.decode('utf-8'))
             self.wfile.write(output.replace('\n','<br><br>'))
-
         return
 
+    def do_web_get(self):
+        self.send_response(200)
+        self.send_header('Content-type','text/html; charset=utf-8')
+        self.end_headers()
+        self.wfile.write('<h1>Hello Web!</h1>')
+        return
+    
+    def do_mobile_get(self):
+        self.send_response(200)
+        self.send_header('Content-type','text/html; charset=utf-8')
+        self.end_headers()
+        self.wfile.write('<h1>Hello Mobile!</h1>')
+        return
+
+    #Handler for the GET requests
+    def do_GET(self):
+        if self.path.startswith('/api/'):
+            self.do_api_get()
+        elif self.path.startswith('/web'):
+            self.do_web_get()
+        elif self.path.startswith('/m'):
+            self.do_mobile_get()
+        else:
+            self.do_404()
+        return
 try:
     #Create a web server and define the handler to manage incoming requests
     server = HTTPServer(('', PORT_NUMBER), base_handler)
