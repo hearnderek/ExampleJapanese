@@ -6,6 +6,13 @@ import urlparse
 import subprocess
 
 PORT_NUMBER = 80
+web_html = 'load me'
+mobile_html = 'load me'
+with open('web.html') as wfp:
+    web_html = wfp.read()
+with open('mobile.html') as mfp:
+    mobile_html = mfp.read()
+
 
 def grep_documents(word):
     return subprocess.Popen(["grep", word, '-rh', 'text/'], stdout=subprocess.PIPE).communicate()[0]
@@ -13,6 +20,7 @@ def grep_documents(word):
 
 #This class will handles any incoming request from the browser 
 class base_handler(BaseHTTPRequestHandler):
+
     def do_404(self):
         self.send_response(404)
         self.send_header('Content-type','text/html; charset=utf-8')
@@ -37,14 +45,14 @@ class base_handler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-type','text/html; charset=utf-8')
         self.end_headers()
-        self.wfile.write('<h1>Hello Web!</h1>')
+        self.wfile.write(web_html)
         return
     
     def do_mobile_get(self):
         self.send_response(200)
         self.send_header('Content-type','text/html; charset=utf-8')
         self.end_headers()
-        self.wfile.write('<h1>Hello Mobile!</h1>')
+        self.wfile.write(mobile_html)
         return
 
     #Handler for the GET requests
