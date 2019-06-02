@@ -7,12 +7,8 @@ import subprocess
 
 PORT_NUMBER = 80
 web_html = 'load me'
-mobile_html = 'load me'
 with open('web.html') as wfp:
     web_html = wfp.read()
-#with open('mobile.html') as mfp:
-with open('bs.html') as mfp:
-    mobile_html = mfp.read()
 
 
 def grep_documents(word):
@@ -58,21 +54,12 @@ class base_handler(BaseHTTPRequestHandler):
 
         self.wfile.write(web_html.replace('$VALUE',text))
     
-    def do_mobile_get(self):
-        self.send_response(200)
-        self.send_header('Content-type','text/html; charset=utf-8')
-        self.end_headers()
-        self.wfile.write(mobile_html)
-        return
-
     #Handler for the GET requests
     def do_GET(self):
         if self.path.startswith('/api/'):
             self.do_api_get()
         elif self.path.startswith('/web'):
             self.do_web_get()
-        elif self.path.startswith('/m'):
-            self.do_mobile_get()
         else:
             self.do_404()
         return
