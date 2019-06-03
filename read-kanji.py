@@ -44,6 +44,8 @@ def get_sentence_difficulty (kanji_level_list):
     kanji = list(filter(lambda x: x>0, kanji_level_list))
     kanji.sort()
     kanji_len = len(kanji)
+    if kanji_len == 0:
+        return 0
     kanji_max = kanji[-1]
 
 
@@ -73,6 +75,8 @@ def sentence_test (sentence):
     print(difficulty)
 
 
+
+
 test = '私'
 l = get_kanji_level(test)
 d = get_sentence_difficulty([l])
@@ -94,6 +98,7 @@ test6 = '戦闘シーンやフィールドなどのグラフィックは3Dで描
 test7 = '介護保険制度とは、介護が必要となった方やそのご家族を社会全体で支えていく仕組みです。'
 test8 = '当行はお客さまへの情報提供の一環として、外国為替相場に関する相場見通し等のレポートをご提供する場合があります。'
 test9 = '遺跡船へ漂着した直後、シャーリィは山賊の首領にして魔獣使いのモーゼス・シャンドルに捕まる。'
+test10 = 'ありがとう'
 sentence_test(test3)
 sentence_test(test4)
 sentence_test(test5)
@@ -101,3 +106,6 @@ sentence_test(test6)
 sentence_test(test7)
 sentence_test(test8)
 sentence_test(test9)
+sentence_test(test10)
+
+
