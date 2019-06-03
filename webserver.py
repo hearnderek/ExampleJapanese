@@ -7,6 +7,7 @@ import subprocess
 
 PORT_NUMBER = 80
 
+# could just use lists, but hey let's use this dictionary for O(1) lookups
 banned_words = {'wlwmanifest.xml':0}
 banned_ips = {}
 
@@ -31,7 +32,6 @@ def get_line_weight (line):
 
 def grep_documents(word):
     output = subprocess.Popen(["grep", word, '-rh', 'text/'], stdout=subprocess.PIPE).communicate()[0]
-    print(type(output),'hello world')
     split = output.split("\n")
     split.sort()
     return "\n".join(split)
