@@ -6,6 +6,7 @@ import urlparse
 import subprocess
 
 PORT_NUMBER = 80
+
 web_html = 'load me'
 with open('web.html') as wfp:
     web_html = wfp.read()
