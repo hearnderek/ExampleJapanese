@@ -7,6 +7,9 @@ import subprocess
 
 PORT_NUMBER = 80
 
+banned_words = {'wlwmanifest.xml':0}
+banned_ips = {}
+
 web_html = 'load me'
 with open('web.html') as wfp:
     web_html = wfp.read()
@@ -36,6 +39,13 @@ def grep_documents(word):
 #This class will handles any incoming request from the browser 
 class base_handler(BaseHTTPRequestHandler):
 
+
+    def do_403(self):
+        self.send_response(403)
+        self.send_header('Content-type','text/html; charset=utf-8')
+        self.end_headers()
+        return
+    
     def do_404(self):
         self.send_response(404)
         self.send_header('Content-type','text/html; charset=utf-8')
@@ -80,6 +90,21 @@ class base_handler(BaseHTTPRequestHandler):
     
     #Handler for the GET requests
     def do_GET(self):
+        # Anti hacker fun
+        if self.client_address[0] in banned_ips:
+            print "A haxx0r knocks...", self.client_address[0]
+            self.do_403()
+            return
+
+        if self.path.split('/')[-1] in banned_words:
+            print "Banning Haxx0r", self.client_address[0]
+            banned_ips[self.client_address[0]] = 0
+            with open('banned_ips', 'a') as bip:
+                bip.write(self.client_address[0] + '\n')
+                
+            self.do_403()
+            return
+
         if self.path.startswith('/api/'):
             self.do_api_get()
         elif self.path.startswith('/web'):
