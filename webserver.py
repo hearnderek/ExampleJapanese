@@ -10,6 +10,9 @@ web_html = 'load me'
 with open('web.html') as wfp:
     web_html = wfp.read()
 
+index_html = 'load me'
+with open('index.html') as ifp:
+    index_html = ifp.read()
 
 def grep_documents(word):
     return subprocess.Popen(["grep", word, '-rh', 'text/'], stdout=subprocess.PIPE).communicate()[0]
@@ -35,8 +38,14 @@ class base_handler(BaseHTTPRequestHandler):
         # Send the html message
         for val in search:
             output = grep_documents(val.decode('utf-8'))
-            self.wfile.write(output.replace('\n','<br><br>'))
+            self.wfile.write(output)
         return
+
+    def do_index_get(self):
+        self.send_response(200)
+        self.send_header('Content-type','text/html; charset=utf-8')
+        self.end_headers()
+        self.wfile.write(index_html)
 
     def do_web_get(self):
         self.send_response(200)
@@ -61,7 +70,7 @@ class base_handler(BaseHTTPRequestHandler):
         elif self.path.startswith('/web'):
             self.do_web_get()
         else:
-            self.do_404()
+            self.do_index_get()
         return
 try:
     #Create a web server and define the handler to manage incoming requests
