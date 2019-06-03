@@ -15,9 +15,23 @@ index_html = 'load me'
 with open('index.html') as ifp:
     index_html = ifp.read()
 
-def grep_documents(word):
-    return subprocess.Popen(["grep", word, '-rh', 'text/'], stdout=subprocess.PIPE).communicate()[0]
+def get_line_weight (line):
 
+    weight = line[0:4]
+    print(weight)
+    if weight.isdigit():
+        return float(weight)
+    else:
+        return 0
+
+    
+
+def grep_documents(word):
+    output = subprocess.Popen(["grep", word, '-rh', 'text/'], stdout=subprocess.PIPE).communicate()[0]
+    print(type(output),'hello world')
+    split = output.split("\n")
+    split.sort()
+    return "\n".join(split)
 
 #This class will handles any incoming request from the browser 
 class base_handler(BaseHTTPRequestHandler):
