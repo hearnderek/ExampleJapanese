@@ -80,13 +80,15 @@ class base_handler(BaseHTTPRequestHandler):
         # take all values of url parameter 'search'
         search = urlparse.parse_qs(urlparse.urlparse(self.path).query).get('Search', '')
         text = ''
+        word = ''
 
         # Send the html message
         for val in search:
+            word = val
             output = grep_documents(val.decode('utf-8'))
             text += output
 
-        self.wfile.write(web_html.replace('$VALUE',text))
+        self.wfile.write(web_html.replace('$VALUE',text).replace('$WORD',word))
     
     #Handler for the GET requests
     def do_GET(self):

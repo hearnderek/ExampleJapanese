@@ -25,13 +25,16 @@
 
 <script>
 var results = document.getElementById('results');
+var word = `$WORD`;
 var values = `$VALUE`;
 var splits = values.trim().split("\n");
 for(var i=0;i<splits.length; i++) {
-	var li = document.createElement("LI");
-	var t = document.createTextNode(splits[i]);
-	li.appendChild(t);
-	results.appendChild(li);
+  if(!(/^\s*$/.test(splits[i]))){
+    var li = document.createElement("LI");
+    var t = document.createTextNode(splits[i]);
+    li.appendChild(t);
+    results.appendChild(li);
+  }
 }
 </script>
 </html>
