@@ -27,14 +27,33 @@
 var results = document.getElementById('results');
 var word = `$WORD`;
 var values = `$VALUE`;
+// split text by lines
 var splits = values.trim().split("\n");
 for(var i=0;i<splits.length; i++) {
-  if(!(/^\s*$/.test(splits[i]))){
-    var li = document.createElement("LI");
-    var t = document.createTextNode(splits[i]);
-    li.appendChild(t);
-    results.appendChild(li);
-  }
+	// ignore whitespace lines
+	if(!(/^\s*$/.test(splits[i]))){
+		var li = document.createElement("LI");
+		var p = document.createElement("p");
+		p.style.cssText = 'color: black';
+		var txt = splits[i];
+		var difficulty = txt.substring(0,4);
+		li.style.cssText = `color: rgb(${difficulty*255},${255-difficulty*255},0)`;
+		txt = txt.substring(5);
+		var txtSplits = txt.split(word);
+		for(var j=0; j<txtSplits.length-1; j++){
+			var t = document.createTextNode(txtSplits[j]);
+			var span = document.createElement("span");
+			span.style.cssText = 'color: rgb(0, 132, 5);'
+			var st = document.createTextNode(word);
+			p.appendChild(t);
+			span.appendChild(st);
+			p.appendChild(span);
+		}
+		var t = document.createTextNode(txtSplits[txtSplits.length-1]);
+		p.appendChild(t);
+		li.appendChild(p);
+		results.appendChild(li);
+	}
 }
 </script>
 </html>
