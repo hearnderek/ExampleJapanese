@@ -23,7 +23,7 @@ def is_kanji(kanji):
     elif len(kanji) > 1:
         return list(map(is_kanji, list(kanji)))
     else:
-        return bool(re.search('\w',kanji)) and not bool(re.search('[a-zA-Zあ-んア-ン]',kanji))
+        return bool(re.search('\w',kanji)) and not bool(re.search('[ーa-zA-Z\dあ-んア-ン]',kanji))
 
 def get_kanji_level (kanji):
     if type(kanji) is not str:

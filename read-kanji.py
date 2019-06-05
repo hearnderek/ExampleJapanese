@@ -19,7 +19,7 @@ def is_kanji(kanji):
     elif len(kanji) > 1:
         return list(map(is_kanji, list(kanji)))
     else:
-        return bool(re.search('\w',kanji)) and not bool(re.search('[a-zA-Zあ-んア-ン]',kanji))
+        return bool(re.search('\w',kanji)) and not bool(re.search('[ーa-zA-Z\dあ-んア-ン]',kanji))
 
 def get_kanji_level (kanji):
     if type(kanji) is not str:
@@ -56,14 +56,15 @@ def get_sentence_difficulty (kanji_level_list):
     kanji_80_percentile = kanji[int(kanji_len*0.8)] / hardest_level
     kanji_max_percentage = kanji_max / hardest_level
 
-    # d = {
-    #     "kp":kanji_percentage,
-    #     "ka":kanji_average,
-    #     "km":kanji_mean,
-    #     "k8p":kanji_80_percentile,
-    #     "kmp":kanji_max_percentage
-    # }
-    # print(d)
+    d = {
+        "kp":kanji_percentage,
+        "ka":kanji_average,
+        "km":kanji_mean,
+        "k8p":kanji_80_percentile,
+        "kmp":kanji_max_percentage,
+        "kanji":kanji_level_list
+    }
+    print(d)
     metrics = [kanji_percentage, kanji_average, kanji_mean, kanji_80_percentile, kanji_max_percentage]
     return sum(metrics)/len(metrics)
     
@@ -99,6 +100,8 @@ test7 = '介護保険制度とは、介護が必要となった方やそのご�
 test8 = '当行はお客さまへの情報提供の一環として、外国為替相場に関する相場見通し等のレポートをご提供する場合があります。'
 test9 = '遺跡船へ漂着した直後、シャーリィは山賊の首領にして魔獣使いのモーゼス・シャンドルに捕まる。'
 test10 = 'ありがとう'
+test11 = '1940年9月7日、ローマに生まれる。'
+test12 = 'スマートフォ'
 sentence_test(test3)
 sentence_test(test4)
 sentence_test(test5)
@@ -107,5 +110,7 @@ sentence_test(test7)
 sentence_test(test8)
 sentence_test(test9)
 sentence_test(test10)
+sentence_test(test11)
+sentence_test(test12)
 
 
