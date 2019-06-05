@@ -19,7 +19,7 @@ def is_kanji(kanji):
     elif len(kanji) > 1:
         return list(map(is_kanji, list(kanji)))
     else:
-        return bool(re.search('\w',kanji)) and not bool(re.search('[ーa-zA-Z\dあ-んア-ン]',kanji))
+        return bool(re.search('\w',kanji)) and not bool(re.search('[ーa-zA-Z\dあ-んア-ンヴ]',kanji))
 
 def get_kanji_level (kanji):
     if type(kanji) is not str:
@@ -102,6 +102,8 @@ test9 = '遺跡船へ漂着した直後、シャーリィは山賊の首領に�
 test10 = 'ありがとう'
 test11 = '1940年9月7日、ローマに生まれる。'
 test12 = 'スマートフォ'
+test13 = 'イタリアのヴェネツィアに生まれ、オーストリアのウィーンで没した。'
+test14 = 'ロレーヌのバドンヴィレに生まれる'
 sentence_test(test3)
 sentence_test(test4)
 sentence_test(test5)
@@ -112,5 +114,7 @@ sentence_test(test9)
 sentence_test(test10)
 sentence_test(test11)
 sentence_test(test12)
+sentence_test(test13)
+sentence_test(test14)
 
 

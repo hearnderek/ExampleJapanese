@@ -1,7 +1,6 @@
 import re
 import sys
 
-print("Processing: " + sys.argv[1])
 file = sys.argv[1]
 
 kanji_levels = {}
@@ -23,7 +22,7 @@ def is_kanji(kanji):
     elif len(kanji) > 1:
         return list(map(is_kanji, list(kanji)))
     else:
-        return bool(re.search('\w',kanji)) and not bool(re.search('[ーa-zA-Z\dあ-んア-ン]',kanji))
+        return bool(re.search('\w',kanji)) and not bool(re.search('[ーa-zA-Z\dあ-んア-ンヴ]',kanji))
 
 def get_kanji_level (kanji):
     if type(kanji) is not str:
@@ -64,10 +63,12 @@ def get_sentence_difficulty (kanji_level_list):
 
 
 
-
+# main
 with open(file) as fp:
     for line in fp:
         x = line.replace('。','。\n').strip()
         if x != '':
+            if re.search(r'^\d.\d\d:', x):
+                    x = x[5:]
             difficulty = get_sentence_difficulty(get_kanji_level(line))
             print("{:.2f}:{}".format(difficulty,x))
