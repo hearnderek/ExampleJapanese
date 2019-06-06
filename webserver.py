@@ -8,8 +8,16 @@ import subprocess
 PORT_NUMBER = 80
 
 # could just use lists, but hey let's use this dictionary for O(1) lookups
-banned_words = {'wlwmanifest.xml':0}
+banned_words = {'wlwmanifest.xml':0, 'index.php':0}
+banned_ips_file = 'banned_ips'
 banned_ips = {}
+
+try:
+    with open(banned_ips_file, 'r') as bifp:
+        for line in bifp:
+            banned_ips[line.strip()]=0
+except:
+    pass
 
 web_html = 'load me'
 with open('web.html') as wfp:
@@ -94,14 +102,12 @@ class base_handler(BaseHTTPRequestHandler):
     def do_GET(self):
         # Anti hacker fun
         if self.client_address[0] in banned_ips:
-            print "A haxx0r knocks...", self.client_address[0]
             self.do_403()
             return
 
         if self.path.split('/')[-1] in banned_words:
-            print "Banning Haxx0r", self.client_address[0]
             banned_ips[self.client_address[0]] = 0
-            with open('banned_ips', 'a') as bip:
+            with open(banned_ips_file, 'a') as bip:
                 bip.write(self.client_address[0] + '\n')
                 
             self.do_403()
