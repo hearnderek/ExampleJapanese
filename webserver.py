@@ -44,6 +44,12 @@ def grep_documents(word):
     split.sort()
     return "\n".join(split)
 
+def grep_word_list(word):
+    output = subprocess.Popen(["grep", word, 'wordlist.txt'], stdout=subprocess.PIPE).communicate()[0]
+    split = output.split("\n")
+    # split.sort()
+    return "\n".join(split)
+
 #This class will handles any incoming request from the browser 
 class base_handler(BaseHTTPRequestHandler):
 
@@ -74,6 +80,20 @@ class base_handler(BaseHTTPRequestHandler):
             self.wfile.write(output)
         return
 
+    def do_api_word_get(self):
+        self.send_response(200)
+        self.send_header('Content-type','text/html; charset=utf-8')
+        self.end_headers()
+
+        # take all values of url parameter 'search'
+        search = urlparse.parse_qs(urlparse.urlparse(self.path).query).get('search', '')
+
+        # Send the html message
+        for val in search:
+            output = grep_word_list(val.decode('utf-8'))
+            self.wfile.write(output)
+        return
+
     def do_index_get(self):
         self.send_response(200)
         self.send_header('Content-type','text/html; charset=utf-8')
@@ -89,14 +109,17 @@ class base_handler(BaseHTTPRequestHandler):
         search = urlparse.parse_qs(urlparse.urlparse(self.path).query).get('Search', '')
         text = ''
         word = ''
+        reading = ''
 
         # Send the html message
         for val in search:
             word = val
-            output = grep_documents(val.decode('utf-8'))
-            text += output
+            doc_grep = grep_documents(val.decode('utf-8'))
+            text += doc_grep
+            word_grep = grep_word_list(val.decode('utf-8'))
+            reading += word_grep
 
-        self.wfile.write(web_html.replace('$VALUE',text).replace('$WORD',word))
+        self.wfile.write(web_html.replace('$VALUE',text).replace('$WORD',word).replace('$READING',reading))
     
     #Handler for the GET requests
     def do_GET(self):
@@ -117,6 +140,8 @@ class base_handler(BaseHTTPRequestHandler):
             self.do_api_get()
         elif self.path.startswith('/web'):
             self.do_web_get()
+        elif self.path.startswith('/word'):
+            self.do_api_word_get()
         else:
             self.do_index_get()
         return

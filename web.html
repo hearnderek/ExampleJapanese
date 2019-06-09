@@ -17,6 +17,11 @@
     <input type="text" class="form-control" id="usr" name="Search">
   </form>
 
+  <h3> Readings </h3>
+  <ul id='readings'>
+  </ul>
+
+  <h3> Sentences </h3>
   <ul id='results'>
   </ul>
 
@@ -31,20 +36,26 @@
 
 <script>
 var results = document.getElementById('results');
+var readings = document.getElementById('readings');
 var word = `$WORD`;
 var values = `$VALUE`;
+var reading = `$READING`;
 // split text by lines
 var splits = values.trim().split("\n");
 for(var i=0;i<splits.length; i++) {
+	var txt = splits[i].trim()
 	// ignore whitespace lines
-	if(!(/^\s*$/.test(splits[i]))){
+	if(!(/^\s*$/.test(txt))){
+		var difficulty = txt.substring(0,4);
+		txt = txt.substring(5);
+		if(txt == word){
+			continue;
+		}
+
 		var li = document.createElement("LI");
 		var p = document.createElement("p");
 		p.style.cssText = 'color: black';
-		var txt = splits[i];
-		var difficulty = txt.substring(0,4);
 		li.style.cssText = `color: rgb(${difficulty*255},${255-difficulty*255},0)`;
-		txt = txt.substring(5);
 		var txtSplits = txt.split(word);
 		for(var j=0; j<txtSplits.length-1; j++){
 			var t = document.createTextNode(txtSplits[j]);
@@ -61,5 +72,31 @@ for(var i=0;i<splits.length; i++) {
 		results.appendChild(li);
 	}
 }
+
+var rSplits = reading.trim().split("\n");
+for(var i=0;i<rSplits.length; i++) {
+	// ignore whitespace lines
+	if(!(/^\s*$/.test(rSplits[i]))){
+		var li = document.createElement("LI");
+		var p = document.createElement("p");
+		p.style.cssText = 'color: black';
+		var txt = rSplits[i];
+		var txtSplits = txt.split(word);
+		for(var j=0; j<txtSplits.length-1; j++){
+			var t = document.createTextNode(txtSplits[j]);
+			var span = document.createElement("span");
+			span.style.cssText = 'color: rgb(0, 132, 5);'
+			var st = document.createTextNode(word);
+			p.appendChild(t);
+			span.appendChild(st);
+			p.appendChild(span);
+		}
+		var t = document.createTextNode(txtSplits[txtSplits.length-1]);
+		p.appendChild(t);
+		li.appendChild(p);
+		readings.appendChild(li);
+	}
+}
+
 </script>
 </html>
