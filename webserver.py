@@ -50,6 +50,13 @@ def grep_word_list(word):
     # split.sort()
     return "\n".join(split)
 
+def grep_bccwj_word_list(word):
+    tword = " "+word+" "
+    output = subprocess.Popen(["grep", tword, 'bccwj_weighted_wordlist.txt'], stdout=subprocess.PIPE).communicate()[0]
+    split = output.split("\n")
+    # split.sort()
+    return "\n".join(split)
+
 #This class will handles any incoming request from the browser 
 class base_handler(BaseHTTPRequestHandler):
 
@@ -94,6 +101,20 @@ class base_handler(BaseHTTPRequestHandler):
             self.wfile.write(output)
         return
 
+    def do_api_bccwj_word_get(self):
+        self.send_response(200)
+        self.send_header('Content-type','text/html; charset=utf-8')
+        self.end_headers()
+
+        # take all values of url parameter 'search'
+        search = urlparse.parse_qs(urlparse.urlparse(self.path).query).get('search', '')
+
+        # Send the html message
+        for val in search:
+            output = grep_bccwj_word_list(val.decode('utf-8'))
+            self.wfile.write(output)
+        return
+
     def do_index_get(self):
         self.send_response(200)
         self.send_header('Content-type','text/html; charset=utf-8')
@@ -116,7 +137,8 @@ class base_handler(BaseHTTPRequestHandler):
             word = val
             doc_grep = grep_documents(val.decode('utf-8'))
             text += doc_grep
-            word_grep = grep_word_list(val.decode('utf-8'))
+            # word_grep = grep_word_list(val.decode('utf-8'))
+            word_grep = grep_bccwj_word_list(val.decode('utf-8'))
             reading += word_grep
 
         self.wfile.write(web_html.replace('$VALUE',text).replace('$WORD',word).replace('$READING',reading))
@@ -142,6 +164,8 @@ class base_handler(BaseHTTPRequestHandler):
             self.do_web_get()
         elif self.path.startswith('/word'):
             self.do_api_word_get()
+        elif self.path.startswith('/bccwj'):
+            self.do_api_bccwj_word_get()
         else:
             self.do_index_get()
         return

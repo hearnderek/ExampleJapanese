@@ -17,6 +17,8 @@
     <input type="text" class="form-control" id="usr" name="Search">
   </form>
 
+  <h2 class='text-center' id='word' style='color: rgb(0, 132, 5);'> </h2>
+
   <h3> Readings </h3>
   <ul id='readings'>
   </ul>
@@ -24,6 +26,9 @@
   <h3> Sentences </h3>
   <ul id='results'>
   </ul>
+  <br>
+  <h4 id='jisho'></h4>
+  <h4 id='kotobank'></h4>
 
   <br>
   <h2>About</h2>
@@ -35,11 +40,42 @@
 </body>
 
 <script>
+
 var results = document.getElementById('results');
 var readings = document.getElementById('readings');
 var word = `$WORD`;
 var values = `$VALUE`;
 var reading = `$READING`;
+
+if(word != ''){
+	var wordHeader = document.getElementById('word');
+	var wordHeaderText = document.createTextNode(word);
+	wordHeader.appendChild(wordHeaderText);
+
+	var jisho = document.getElementById('jisho');
+	var jishoSearch = 'https://jisho.org/search/';
+	var jishoCopy = 'Search on Jisho.org';
+	var jishoA = document.createElement('a');
+	var jishoText = document.createTextNode(jishoCopy);
+	var jishoDiv = document.getElementById('jisho');
+	jishoA.appendChild(jishoText);
+	jishoA.title = jishoCopy;
+	jishoA.href = jishoSearch + word;
+	jishoDiv.appendChild(jishoA);
+	
+	var kotobank = document.getElementById('kotobank');
+	var kotobankSearch = 'https://kotobank.jp/word/';
+	var kotobankCopy = 'コトバンクで検索'
+	var kotobankA = document.createElement('a');
+	var kotobankText = document.createTextNode(kotobankCopy);
+	var kotobankDiv = document.getElementById('kotobank');
+	kotobankA.appendChild(kotobankText);
+	kotobankA.title = kotobankCopy;
+	kotobankA.href = kotobankSearch + word;
+	kotobankDiv.appendChild(kotobankA);
+
+}
+
 // split text by lines
 var splits = values.trim().split("\n");
 for(var i=0;i<splits.length; i++) {
@@ -77,10 +113,15 @@ var rSplits = reading.trim().split("\n");
 for(var i=0;i<rSplits.length; i++) {
 	// ignore whitespace lines
 	if(!(/^\s*$/.test(rSplits[i]))){
+		var txt = rSplits[i];
+		defSplits = txt.split(' ')
+		var difficulty = defSplits[1]
+		txt = `#${defSplits[0]} ${defSplits[2]}「${defSplits[3]}」`
+		
 		var li = document.createElement("LI");
 		var p = document.createElement("p");
 		p.style.cssText = 'color: black';
-		var txt = rSplits[i];
+		li.style.cssText = `color: rgb(${difficulty*255},${255-difficulty*255},0)`;
 		var txtSplits = txt.split(word);
 		for(var j=0; j<txtSplits.length-1; j++){
 			var t = document.createTextNode(txtSplits[j]);
