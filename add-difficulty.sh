@@ -1,7 +1,7 @@
 for file in text/AA/*.txt
 do
-	echo python3 jp-period-split.py $file > "${file}.tmp"
-	python3 jp-period-split.py $file > "${file}.tmp"
+	echo python3 jpperiodsplit.py $file > "${file}.tmp"
+	python3 jpperiodsplit.py $file > "${file}.tmp"
 
 	echo rm $file
 	rm $file
