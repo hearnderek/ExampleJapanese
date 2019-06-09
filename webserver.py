@@ -39,7 +39,7 @@ def get_line_weight (line):
     
 
 def grep_documents(word):
-    output = subprocess.Popen(["grep", word, '-rh', 'text/'], stdout=subprocess.PIPE).communicate()[0]
+    output = subprocess.Popen(["grep", word, '-rh', '-m','500', 'text/'], stdout=subprocess.PIPE).communicate()[0]
     split = output.split("\n")
     split.sort()
     return "\n".join(split)
