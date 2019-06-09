@@ -11,7 +11,7 @@ class KanjiReader:
                 number = int(line[0])
                 kanji = line[2:].strip().split(' ')
                 for moji in kanji:
-                    self.kanji_levels[moji]=number
+                    self.kanji_levels[moji]=int(number)
 
     def is_kanji(self, kanji):
         if type(kanji) is not str:
@@ -34,6 +34,12 @@ class KanjiReader:
 
     # Trying to figure out a way to judge difficulty of a sentence based on Kanji usage
     def get_sentence_difficulty (self, kanji_level_list, verbose=False):
+        if type(kanji_level_list) is str:
+            kanji_level_list = self.get_kanji_level(kanji_level_list)
+        
+        if type(kanji_level_list) is int:
+            kanji_level_list = [kanji_level_list]
+
         # there are a lot of unnessicary passes through the array
         # this could be optimized by using a single for loop
         length = len(kanji_level_list)
