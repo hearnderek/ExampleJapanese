@@ -29,6 +29,7 @@
   <br>
   <h4 id='jisho'></h4>
   <h4 id='kotobank'></h4>
+  <h4 id='weblio'></h4>
 
   <br>
   <h2>About</h2>
@@ -74,6 +75,16 @@ if(word != ''){
 	kotobankA.href = kotobankSearch + word;
 	kotobankDiv.appendChild(kotobankA);
 
+	var weblio = document.getElementById('weblio');
+	var weblioSearch = 'https://www.weblio.jp/content/';
+	var weblioCopy = 'Weblioで検索'
+	var weblioA = document.createElement('a');
+	var weblioText = document.createTextNode(weblioCopy);
+	var weblioDiv = document.getElementById('weblio');
+	weblioA.appendChild(weblioText);
+	weblioA.title = weblioCopy;
+	weblioA.href = weblioSearch + word;
+	weblioDiv.appendChild(weblioA);
 }
 
 // split text by lines
