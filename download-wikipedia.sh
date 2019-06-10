@@ -6,6 +6,6 @@ rm jawiki-latest-pages-articles.xml
 
 for file in text/AA/*
 do
-	python3 jpperiodsplit.py $file > "${file}.txt"
+	python3 textprep.py $file > "${file}.txt"
 	rm $file
 done
