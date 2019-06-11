@@ -15,11 +15,25 @@ with open(file) as fp:
     for line in fp:
         # Splitting up the wikipedia file so each sentence is on its own line
         # TODO don't split up 。[」]sentences
-        x = line.replace('。','。\n').strip()
-        if x != '':
+        line = line.replace('。','。\n').strip()
+        line = line.replace('？','？\n').strip()
+        line = line.replace('！','！\n').strip()
+
+        for x in line.split("\n"):
+
+            if x == '' or x == '「' or x == '」':
+                continue
+
             # if the file was already parsed by this script remove the old score
             if re.search(r'^\d.\d\d:', x):
-                    x = x[5:]
+                x = x[5:]
+
+            # it's pretty common for my crappy algo to create these hanging brackets
+            if x[0] == '」' or (x[0] == '「' and x[-1] != '」'):
+                x = x[1:]
+
+            if x[-1] == '「' or (x[0] != '「' and x[-1] == '」'):
+                x = x[:-1]
 
             # append a difficulty score to the sentence
             difficulty = kr.get_sentence_difficulty(line)
