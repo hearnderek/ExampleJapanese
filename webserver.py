@@ -1,8 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # coding=utf-8
 
-from BaseHTTPServer import BaseHTTPRequestHandler,HTTPServer
-import urlparse
+from http.server import BaseHTTPRequestHandler,HTTPServer
+import urllib.parse
 import subprocess
 
 PORT_NUMBER = 80
@@ -27,32 +27,23 @@ index_html = 'load me'
 with open('index.html') as ifp:
     index_html = ifp.read()
 
-def get_line_weight (line):
-
-    weight = line[0:4]
-    print(weight)
-    if weight.isdigit():
-        return float(weight)
-    else:
-        return 0
-
-    
-
 def grep_documents(word):
-    output = subprocess.Popen(["grep", word, '-rh', '-m','500', 'text/'], stdout=subprocess.PIPE).communicate()[0]
+    if type(word) is bytes:
+        word = word.decode()
+    output = subprocess.Popen(["grep", word, '-rh', '-m','500', 'text/'], stdout=subprocess.PIPE).communicate()[0].decode()
     split = output.split("\n")
     split.sort()
     return "\n".join(split)
 
 def grep_word_list(word):
-    output = subprocess.Popen(["grep", word, 'wordlist.txt'], stdout=subprocess.PIPE).communicate()[0]
+    output = subprocess.Popen(["grep", word, 'wordlist.txt'], stdout=subprocess.PIPE).communicate()[0].decode()
     split = output.split("\n")
     # split.sort()
     return "\n".join(split)
 
 def grep_bccwj_word_list(word):
     tword = " "+word+" "
-    output = subprocess.Popen(["grep", tword, 'bccwj_weighted_wordlist.txt'], stdout=subprocess.PIPE).communicate()[0]
+    output = subprocess.Popen(["grep", tword, 'bccwj_weighted_wordlist.txt'], stdout=subprocess.PIPE).communicate()[0].decode()
     split = output.split("\n")
     # split.sort()
     return "\n".join(split)
@@ -79,12 +70,12 @@ class base_handler(BaseHTTPRequestHandler):
         self.end_headers()
 
         # take all values of url parameter 'search'
-        search = urlparse.parse_qs(urlparse.urlparse(self.path).query).get('search', '')
+        search = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query).get('search', '')
 
         # Send the html message
         for val in search:
-            output = grep_documents(val.decode('utf-8'))
-            self.wfile.write(output)
+            output = grep_documents(bytes(val,'utf-8').decode())
+            self.wfile.write(output.encode())
         return
 
     def do_api_word_get(self):
@@ -93,12 +84,12 @@ class base_handler(BaseHTTPRequestHandler):
         self.end_headers()
 
         # take all values of url parameter 'search'
-        search = urlparse.parse_qs(urlparse.urlparse(self.path).query).get('search', '')
+        search = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query).get('search', '')
 
         # Send the html message
         for val in search:
             output = grep_word_list(val.decode('utf-8'))
-            self.wfile.write(output)
+            self.wfile.write(output.encode())
         return
 
     def do_api_bccwj_word_get(self):
@@ -107,19 +98,19 @@ class base_handler(BaseHTTPRequestHandler):
         self.end_headers()
 
         # take all values of url parameter 'search'
-        search = urlparse.parse_qs(urlparse.urlparse(self.path).query).get('search', '')
+        search = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query).get('search', '')
 
         # Send the html message
         for val in search:
-            output = grep_bccwj_word_list(val.decode('utf-8'))
-            self.wfile.write(output)
+            output = grep_bccwj_word_list(bytes(val,'utf-8').decode())
+            self.wfile.write(output.encode())
         return
 
     def do_index_get(self):
         self.send_response(200)
         self.send_header('Content-type','text/html; charset=utf-8')
         self.end_headers()
-        self.wfile.write(index_html)
+        self.wfile.write(index_html.encode())
 
     def do_web_get(self):
         self.send_response(200)
@@ -127,21 +118,22 @@ class base_handler(BaseHTTPRequestHandler):
         self.end_headers()
 
         # take all values of url parameter 'search'
-        search = urlparse.parse_qs(urlparse.urlparse(self.path).query).get('Search', '')
+        search = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query).get('Search', '')
         text = ''
         word = ''
         reading = ''
 
         # Send the html message
         for val in search:
-            word = val
-            doc_grep = grep_documents(val.decode('utf-8'))
+            word = bytes(val,'utf-8').decode()
+            print(word)
+            doc_grep = grep_documents(word)
             text += doc_grep
             # word_grep = grep_word_list(val.decode('utf-8'))
-            word_grep = grep_bccwj_word_list(val.decode('utf-8'))
+            word_grep = grep_bccwj_word_list(word)
             reading += word_grep
 
-        self.wfile.write(web_html.replace('$VALUE',text).replace('$WORD',word).replace('$READING',reading))
+        self.wfile.write(web_html.replace('$VALUE',text).replace('$WORD',word).replace('$READING',reading).encode())
     
     #Handler for the GET requests
     def do_GET(self):
@@ -158,7 +150,7 @@ class base_handler(BaseHTTPRequestHandler):
             self.do_403()
             return
 
-        if self.path.startswith('/api/'):
+        if self.path.startswith('/api'):
             self.do_api_get()
         elif self.path.startswith('/web'):
             self.do_web_get()
@@ -172,10 +164,10 @@ class base_handler(BaseHTTPRequestHandler):
 try:
     #Create a web server and define the handler to manage incoming requests
     server = HTTPServer(('', PORT_NUMBER), base_handler)
-    print 'Started httpserver on port ' , PORT_NUMBER
+    print('Started httpserver on port ' , PORT_NUMBER)
     #Wait forever for incoming htto requests
     server.serve_forever()
 
 except KeyboardInterrupt:
-    print '^C received, shutting down the web server'
+    print('^C received, shutting down the web server')
     server.socket.close()
