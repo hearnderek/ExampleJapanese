@@ -9,7 +9,7 @@ PORT_NUMBER = 80
 
 # could just use lists, but hey let's use this dictionary for O(1) lookups
 banned_words = {'wlwmanifest.xml':0, 'index.php':0}
-banned_ips_file = 'banned_ips'
+banned_ips_file = 'docs/banned_ips'
 banned_ips = {}
 
 try:
@@ -20,30 +20,30 @@ except:
     pass
 
 web_html = 'load me'
-with open('web.html') as wfp:
+with open('web/web.html') as wfp:
     web_html = wfp.read()
 
 index_html = 'load me'
-with open('index.html') as ifp:
+with open('web/index.html') as ifp:
     index_html = ifp.read()
 
 def grep_documents(word):
     if type(word) is bytes:
         word = word.decode()
-    output = subprocess.Popen(["grep", word, '-rh', '-m','500', 'text/'], stdout=subprocess.PIPE).communicate()[0].decode()
+    output = subprocess.Popen(["grep", word, '-rh', '-m','500', 'docs/sentences/'], stdout=subprocess.PIPE).communicate()[0].decode()
     split = output.split("\n")
     split.sort()
     return "\n".join(split)
 
 def grep_word_list(word):
-    output = subprocess.Popen(["grep", word, 'wordlist.txt'], stdout=subprocess.PIPE).communicate()[0].decode()
+    output = subprocess.Popen(["grep", word, 'docs/wordlist.txt'], stdout=subprocess.PIPE).communicate()[0].decode()
     split = output.split("\n")
     # split.sort()
     return "\n".join(split)
 
 def grep_bccwj_word_list(word):
     tword = " "+word+" "
-    output = subprocess.Popen(["grep", tword, 'bccwj_weighted_wordlist.txt'], stdout=subprocess.PIPE).communicate()[0].decode()
+    output = subprocess.Popen(["grep", tword, 'docs/bccwj_weighted_wordlist.txt'], stdout=subprocess.PIPE).communicate()[0].decode()
     split = output.split("\n")
     # split.sort()
     return "\n".join(split)
