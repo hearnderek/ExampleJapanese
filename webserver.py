@@ -126,7 +126,6 @@ class base_handler(BaseHTTPRequestHandler):
         # Send the html message
         for val in search:
             word = bytes(val,'utf-8').decode()
-            print(word)
             doc_grep = grep_documents(word)
             text += doc_grep
             # word_grep = grep_word_list(val.decode('utf-8'))
