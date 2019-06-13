@@ -27,6 +27,10 @@ index_html = 'load me'
 with open('web/index.html') as ifp:
     index_html = ifp.read()
 
+books_html = 'load me'
+with open('web/recommended-books.html') as rbfp:
+    books_html = rbfp.read()
+
 def grep_documents(word):
     if type(word) is bytes:
         word = word.decode()
@@ -112,6 +116,12 @@ class base_handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(index_html.encode())
 
+    def do_books_get(self):
+        self.send_response(200)
+        self.send_header('Content-type','text/html; charset=utf-8')
+        self.end_headers()
+        self.wfile.write(books_html.encode())
+        
     def do_web_get(self):
         self.send_response(200)
         self.send_header('Content-type','text/html; charset=utf-8')
@@ -155,6 +165,8 @@ class base_handler(BaseHTTPRequestHandler):
             self.do_web_get()
         elif self.path.startswith('/word'):
             self.do_api_word_get()
+        elif self.path.startswith('/books'):
+            self.do_books_get()
         elif self.path.startswith('/bccwj'):
             self.do_api_bccwj_word_get()
         else:
